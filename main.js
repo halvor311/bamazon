@@ -2,8 +2,6 @@ var mysql = require("mysql");
 var inquirer = require("inquirer");
 var password = require("./password")
 const cTable = require('console.table');
-var res = [];
-var i = 0;
 var connection = mysql.createConnection({
   host: "localhost",
   port: 8889,
@@ -22,11 +20,11 @@ connection.connect(function(err){
     connection.query("SELECT * FROM products",function(err,res){
         if(err) throw err;
         console.table(res);
-        runSearch();
+        runSearch(res);
     })
 
 
-function runSearch(){
+function runSearch(result){
     inquirer
     .prompt([{
         name: "id",
@@ -45,7 +43,7 @@ function runSearch(){
         // connection.query("SELECT product_name FROM products",{id: answer.id}, function(err, res){
         //     if (err) throw err
         //     console.table(res.answer);
-        if (answer.quantity < res[i].stock_quantity){
+        if (answer.quantity < result[answer.id-1].stock_quantity){
             console.log("Congrats on your purchase!!");
         }
         else{
