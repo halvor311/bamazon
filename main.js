@@ -40,9 +40,9 @@ function runSearch(result){
 
     }]).then(function(answer){
         console.log(answer.id);
-        // connection.query("SELECT product_name FROM products",{id: answer.id}, function(err, res){
-        //     if (err) throw err
-        //     console.table(res.answer);
+        connection.query("SELECT product_name FROM products",{id: answer.id}, function(err, res){
+            if (err) throw (err)
+            console.table(res.answer);
         if (answer.quantity < result[answer.id-1].stock_quantity){
             console.log("Congrats on your purchase!!");
         }
@@ -51,11 +51,19 @@ function runSearch(result){
             }
         
         });
-    }
-    connection.end();
+        connection.query(
+            "UPDATE products SET stock_quantity = stock_quantity - ? WHERE item_id = ?",[
+                answer.howMany,
+                answer.items.item_id
+            ], function (error){
+                if (error) throw (error)
+                console.log(answer.stock_quantity + "fewer");
+            }
+        );
+        connection.end();
+
+    });
+}
+
 });
-        
-        // switch (answer.action){
-        //     case ""
-        // }
-    
+
